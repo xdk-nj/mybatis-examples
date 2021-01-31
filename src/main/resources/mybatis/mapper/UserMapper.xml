@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+                "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mybatis.mapper.UserMapper">
+    <cache></cache>
+
+    <select id="getUserById" resultType="user">
+        select * from user where id = #{id}
+    </select>
+
+    <insert id="addUser" parameterType="mybatis.bean.User" useGeneratedKeys="true" keyProperty="id">
+        insert into user(username, address) values (#{username}, #{address})
+    </insert>
+
+    <insert id="addUserWithUUID" parameterType="mybatis.bean.User" useGeneratedKeys="true" keyProperty="id">
+        <selectKey keyProperty="username" order="BEFORE" resultType="java.lang.String">
+            select uuid();
+        </selectKey>
+        insert into user(username, address) values (#{username}, #{address})
+    </insert>
+
+    <delete id="deleteUserById" parameterType="java.lang.Integer">
+        delete from user where id = #{id}
+    </delete>
+
+    <update id="updateUser" parameterType="mybatis.bean.User">
+        update user set username = #{username}, address = #{address} where id = #{id}
+    </update>
+
+    <select id="getAllUsers" resultType="mybatis.bean.User">
+        select * from user
+    </select>
+
+    <update id="updateUsernameById">
+        update user set username = #{username} where id = #{id}
+    </update>
+
+
+    <resultMap id="myMap" type="mybatis.bean.User">
+        <id column="id" property="id"></id>
+        <result column="username" property="username"></result>
+        <result column="address" property="address"></result>
+    </resultMap>
+
+    <select id="getUserByIdWithResultMap" resultMap="myMap">
+        select * from user where id = #{id}
+    </select>
+</mapper>

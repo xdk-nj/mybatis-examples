@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+                "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mybatis.mapper.DynamicSQLMapper">
+
+    <select id="getUserByPage" resultType="user">
+        select * from user
+        <if test="start != null and count != null">
+            limit #{start}, #{count}
+        </if>
+    </select>
+
+    <!-- mybatis中的where标签可以去除 开头的 and 或者 or 但是放在后面的不行 -->
+    <select id="getUserByUsernameAndId" resultType="user">
+        select * from user
+        <where>
+            <if test="username != null">
+                and username like concat('%', #{username}, '%')
+            </if>
+            <if test="id != null">
+                and id > #{id}
+            </if>
+        </where>
+    </select>
+
+    <!--sql抽取-->
+    <sql id="Base_Column">
+        id,username,address
+    </sql>
+
+    <select id="getUserByIds" resultType="user">
+        select <include refid="Base_Column"/> from user where id in
+        <foreach collection="ids" open="(" close=")" item="id" separator=",">
+            #{id}
+        </foreach>
+    </select>
+
+    <update id="updateUser" parameterType="user">
+        update user
+        <set>
+            <if test="username != null">
+                username = #{username},
+            </if>
+            <if test="address != null">
+                address = #{address},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+</mapper>

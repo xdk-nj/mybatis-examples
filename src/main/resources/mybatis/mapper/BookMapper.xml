@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+                "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mybatis.mapper.BookMapper">
+
+    <!--使用这种方式，一次性读取到所有数据-->
+    <resultMap id="bookWithAuthor" type="mybatis.bean.Book">
+        <id column="id" property="id"></id>
+        <result column="name" property="name"></result>
+        <association property="author" javaType="mybatis.bean.Author">
+            <id column="aid" property="id"></id>
+            <result column="aname" property="name"></result>
+            <result column="aage" property="age"></result>
+        </association>
+    </resultMap>
+
+    <select id="getBookById" resultMap="bookWithAuthor">
+        select b.*, a.id as aid, a.age as aage, a.name as aname
+        from book b, author a
+        where b.aid = a.id and b.id = #{id};
+    </select>
+
+
+
+    <resultMap id="bookWithAuthorUseLazyLoading" type="mybatis.bean.Book">
+        <id column="id" property="id"></id>
+        <result column="name" property="name"></result>
+        <association property="author" javaType="mybatis.bean.Author"
+            select="mybatis.mapper.AuthorMapper.getAuthorById"
+            column="aid" fetchType="lazy">
+        </association>
+    </resultMap>
+
+    <select id="getBookById2" resultMap="bookWithAuthorUseLazyLoading">
+        select * from book where id = #{id}
+    </select>
+</mapper>

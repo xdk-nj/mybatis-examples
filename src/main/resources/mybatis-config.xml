@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <!--
+        全局配置
+        properties 属性
+        settings 全局配置参数
+        typeAliases 类型别名
+        typeHandlers 类型处理器
+
+        objectFactory 对象工厂
+        plugins 插件
+
+        environments 环境集合属性对象
+        environment 环境子属性对象
+
+        transactionManager 事务管理
+        dataSource 数据源
+        mappers 映射器
+    -->
+    <properties resource="db.properties"></properties>
+
+    <settings>
+<!--        <setting name="logImpl" value="STDOUT_LOGGING" />-->
+        <setting name="mapUnderscoreToCamelCase" value="true"/> <!--开启驼峰命名-->
+        <setting name="lazyLoadingEnabled" value="true"/>
+        <setting name="aggressiveLazyLoading" value="false"/>
+        <setting name="cacheEnabled" value="true"/>
+    </settings>
+
+    <!--批量起别名 默认是类名首字母小写  用于定义resultType-->
+    <typeAliases>
+        <package name="mybatis.bean"/>
+    </typeAliases>
+
+    <!--查询时可以自动转换-->
+    <typeHandlers>
+        <package name="mybatis.mytypehandler"/>
+    </typeHandlers>
+
+
+    <environments default="development">
+        <environment id="development">
+            <transactionManager type="JDBC"/>
+            <dataSource type="POOLED">
+                <property name="driver" value="${db.driver}"/>
+                <property name="url" value="${db.url}"/>
+                <property name="username" value="${db.username}"/>
+                <property name="password" value="${db.password}"/>
+            </dataSource>
+        </environment>
+    </environments>
+
+    <mappers>
+        <mapper class="mybatis.mapper.UserMapper"></mapper>
+        <mapper class="mybatis.mapper.User2Mapper"></mapper>
+        <mapper class="mybatis.mapper.HobbyMapper"></mapper>
+        <mapper class="mybatis.mapper.DynamicSQLMapper"></mapper>
+        <mapper class="mybatis.mapper.BookMapper"></mapper>
+        <mapper class="mybatis.mapper.AuthorMapper"></mapper>
+    </mappers>
+</configuration>
